@@ -32,6 +32,7 @@ class App extends Component {
       createdAt: new Date(), // current time
       owner: Meteor.userId(), // _id of logged in user
       username: Meteor.user().username, // username of logged in user
+      private: false,
     };
 
     Meteor.call('insertTask', tasks, (error) => {
