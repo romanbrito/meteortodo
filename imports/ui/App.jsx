@@ -1,7 +1,7 @@
 // create a container component which provides data to your presentational components.
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-import { Meteor } from 'meteor/meteor';
+import {Meteor} from 'meteor/meteor';
 import {createContainer} from 'meteor/react-meteor-data';
 
 import {Tasks} from '../api/tasks.js';
@@ -27,11 +27,19 @@ class App extends Component {
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
 
-    Tasks.insert({
+    let tasks = {
       text,
       createdAt: new Date(), // current time
       owner: Meteor.userId(), // _id of logged in user
       username: Meteor.user().username, // username of logged in user
+    };
+
+    Meteor.call('insertTask', tasks, (error) => {
+      if (error) {
+        console.log("error " + error.reason);
+      } else {
+        console.log("Task added");
+      }
     });
 
     // Clear form
