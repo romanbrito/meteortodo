@@ -118,6 +118,9 @@ App.propTypes = {
 
 // create Container to feed Meteor's reactive data into React's component hierarchy
 export default createContainer(() => {
+  // after removing autopublish when app component is created
+  Meteor.subscribe('tasks');
+
   return {
     tasks: Tasks.find({}, {sort: {createdAt: -1}}).fetch(),
     // since we already have the data in the client-side, adding count

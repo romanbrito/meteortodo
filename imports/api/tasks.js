@@ -3,6 +3,14 @@ import SimpleSchema from 'simpl-schema';
 
 export const Tasks = new Mongo.Collection('tasks');
 
+// after removing autopublish
+if (Meteor.isServer) {
+  // this code only runs on the server
+  Meteor.publish('tasks', function tasksPublication() {
+    return Tasks.find();
+  });
+}
+
 Tasks.allow({
   insert() { return false; },
   update() { return false; },
