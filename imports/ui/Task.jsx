@@ -1,19 +1,46 @@
 import React, {Component, PropTypes } from 'react';
+// to create methods for secure
+import {Meteor} from 'meteor/meteor';
+
 // mongodb
 import { Tasks} from '../api/tasks';
+
 
 // task component - represents a single todo item
 export default class Task extends Component {
 
   toggleChecked() {
     // Set the checked property to the opposite of its current value
-    Tasks.update(this.props.task._id, {
-      $set: { checked: !this.props.task.checked},
+    let data = {
+      id: this.props.task._id,
+      checked: !this.props.task.checked
+    };
+
+    // for secure
+    Meteor.call('updateTask', data, (error) => {
+      if (error) {
+        console.log("error " + error.reason);
+      } else {
+        console.log("Task updated");
+      }
     });
+
+
   }
 
   deleteThisTask() {
-    Tasks.remove(this.props.task._id);
+
+    let taskID = this.props.task._id;
+
+    // for secure
+    Meteor.call('deleteTask', taskID, (error) => {
+      if (error) {
+        console.log("error " + error.reason);
+      } else {
+        console.log("Task deleted");
+      }
+    });
+
   }
 
   render() {
