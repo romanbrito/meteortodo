@@ -1,6 +1,7 @@
 import React, {Component, PropTypes } from 'react';
 // to create methods for secure
 import {Meteor} from 'meteor/meteor';
+import classnames from 'classnames';
 
 // mongodb
 import { Tasks} from '../api/tasks';
@@ -43,10 +44,18 @@ export default class Task extends Component {
 
   }
 
+  togglePrivate() {
+    Meteor.call('setPrivate', this.props.task._id, ! this.props.task.private);
+  }
+
+
   render() {
     // Give tasks a different className when they are chcked off,
     // so that we can style them nicely in CSS
-    const taskClassName = this.props.task.checked ? 'checked' : '';
+    const taskClassName = classnames({
+      checked: this.props.task.checked,
+      private: this.props.task.private,
+    });
 
     return (
       <li className={taskClassName}>
@@ -60,6 +69,13 @@ export default class Task extends Component {
           checked={this.props.task.checked}
           onClick={this.toggleChecked.bind(this)}
         />
+
+        { this.props.showPrivateButton ? (
+          <button className="toggle-private" onClick={this.togglePrivate.bind(this)}>
+            { this.props.task.private ? 'Private' : 'Public' }
+          </button>
+        ) : ''}
+
         <span className="text">
           <strong>{this.props.task.username}</strong>: {this.props.task.text}
           </span>
@@ -72,4 +88,5 @@ Task.propTypes = {
   // This component gets the task to display through a react prop.
   // We can use porpTypes to indicate it is required
   task: PropTypes.object.isRequired,
+  showPrivateButton: React.PropTypes.bool.isRequired,
 };

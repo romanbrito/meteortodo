@@ -5,12 +5,20 @@ export const Tasks = new Mongo.Collection('tasks');
 
 // after removing autopublish
 if (Meteor.isServer) {
-  // this code only runs on the server
+  // This code only runs on the server
+  // Only publish tasks that are public or belong to the current user
   Meteor.publish('tasks', function tasksPublication() {
-    return Tasks.find();
+    return Tasks.find({
+      $or: [
+        { private: { $ne: true } },
+        { owner: this.userId },
+      ],
+    });
   });
 }
 
+
+// methods after removing insecure
 Tasks.allow({
   insert() { return false; },
   update() { return false; },
@@ -44,7 +52,9 @@ const TaskSchema = new SimpleSchema({
     // }
   },
   owner: {type: String},
-  username: {type: String}
+  username: {type: String},
+  private: {type: Boolean},
+
 });
 
 Tasks.attachSchema(TaskSchema);
