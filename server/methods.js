@@ -1,7 +1,21 @@
 import { Meteor } from 'meteor/meteor';
 import { Tasks } from '../imports/api/tasks';
 
-Meteor.methods({
+// after removing autopublish
+if (Meteor.isServer) {
+  // This code only runs on the server
+  // Only publish tasks that are public or belong to the current user
+  Meteor.publish('tasks', function tasksPublication() {
+    return Tasks.find({
+      $or: [
+        { private: { $ne: true } },
+        { owner: this.userId },
+      ],
+    });
+  });
+}
+
+const serverMethods = Meteor.methods({
 
   'tasks.insert'(tasks) {
 
@@ -17,10 +31,10 @@ Meteor.methods({
   'tasks.remove'(taskID) {
 
     const task = Tasks.findOne(taskID);
-    if (task.owner !== Meteor.userId()) {
-      // If the task is private, make sure only the owner can delete it
-      throw new Meteor.Error('not-authorized');
-    }
+    // if (task.owner !== Meteor.userId()) {
+    //   // If the task is private, make sure only the owner can delete it
+    //   throw new Meteor.Error('not-authorized');
+    // }
 
 
     Tasks.remove(taskID);
@@ -53,3 +67,5 @@ Meteor.methods({
   },
 
 });
+
+export default serverMethods;
