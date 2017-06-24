@@ -35,7 +35,7 @@ class App extends Component {
       private: false,
     };
 
-    Meteor.call('insertTask', tasks, (error) => {
+    Meteor.call('tasks.insert', tasks, (error) => {
       if (error) {
         console.log("error " + error.reason);
       } else {

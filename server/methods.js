@@ -3,7 +3,7 @@ import { Tasks } from '../imports/api/tasks';
 
 Meteor.methods({
 
-  insertTask(tasks) {
+  'tasks.insert'(tasks) {
 
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
@@ -14,7 +14,7 @@ Meteor.methods({
 
   },
 
-  deleteTask(taskID) {
+  'tasks.remove'(taskID) {
 
     const task = Tasks.findOne(taskID);
     if (task.owner !== Meteor.userId()) {
@@ -27,7 +27,7 @@ Meteor.methods({
     console.log("delete task");
   },
 
-  updateTask(data) {
+  'tasks.setChecked'(data) {
 
     const task = Tasks.findOne(data.id);
     if (task.owner !== Meteor.userId()) {
@@ -41,7 +41,7 @@ Meteor.methods({
     });
   }, // adding private after removing autopublish
 
-  setPrivate(taskID, setToPrivate) {
+  'tasks.setPrivate'(taskID, setToPrivate) {
     const task = Tasks.findOne(taskID);
 
     // Make sure only the task onwer can make a task private

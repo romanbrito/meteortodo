@@ -18,7 +18,7 @@ export default class Task extends Component {
     };
 
     // for secure
-    Meteor.call('updateTask', data, (error) => {
+    Meteor.call('tasks.setChecked', data, (error) => {
       if (error) {
         console.log("error " + error.reason);
       } else {
@@ -34,7 +34,7 @@ export default class Task extends Component {
     let taskID = this.props.task._id;
 
     // for secure
-    Meteor.call('deleteTask', taskID, (error) => {
+    Meteor.call('tasks.remove', taskID, (error) => {
       if (error) {
         console.log("error " + error.reason);
       } else {
@@ -45,7 +45,7 @@ export default class Task extends Component {
   }
 
   togglePrivate() {
-    Meteor.call('setPrivate', this.props.task._id, ! this.props.task.private);
+    Meteor.call('tasks.setPrivate', this.props.task._id, ! this.props.task.private);
   }
 
 
